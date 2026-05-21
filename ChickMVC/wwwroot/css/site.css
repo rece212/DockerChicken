@@ -1,5 +1,6 @@
 html {
   font-size: 14px;
+  scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
@@ -8,24 +9,134 @@ html {
   }
 }
 
+body {
+  position: relative;
+  margin: 0;
+  min-height: 100%;
+  background: linear-gradient(180deg, #fffaf0 0%, #fdeed8 45%, #f7f1e7 100%);
+  color: #2d2d2d;
+}
+
+.container {
+  max-width: 1140px;
+}
+
+.chicken-hero {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at top center, rgba(255, 243, 216, 0.9) 0%, rgba(255, 238, 209, 0.75) 40%, rgba(245, 224, 189, 0.95) 100%);
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 35%);
+  pointer-events: none;
+}
+
+.hero-body {
+  position: relative;
+  z-index: 1;
+}
+
+.chicken-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 1.5rem;
+  font-size: 2.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #ff8c00;
+}
+
+.hero-actions .btn {
+  min-width: 180px;
+}
+
+.mw-700 {
+  max-width: 700px;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 201, 107, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 45px rgba(64, 64, 64, 0.08);
+}
+
+.feature-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff6ea;
+  font-size: 2rem;
+}
+
+.section-tag {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: #fff4e6;
+  color: #b55d16;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-heading {
+  font-size: clamp(2rem, 2.5vw, 2.75rem);
+  line-height: 1.05;
+}
+
+.story-panel {
+  border: 1px solid rgba(237, 175, 49, 0.15);
+}
+
+.story-card {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.story-card p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.stats {
+  gap: 1.5rem;
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.stat-label {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+}
+
+footer.footer {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.25rem 0;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
 }

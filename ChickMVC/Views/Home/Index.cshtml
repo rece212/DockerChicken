@@ -2,7 +2,80 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about Added by the api- @ViewBag.Chicken</p>
+<section class="chicken-hero text-white text-center">
+    <div class="hero-overlay"></div>
+    <div class="hero-body container py-6">
+        <div class="chicken-badge shadow-lg">🐔</div>
+        <h1 class="display-4 fw-bold">The World's Best Chicken Experience</h1>
+        <p class="lead text-white-75 mx-auto mw-700">Discover fresh farm flavor, happy hens, and unforgettable chicken stories crafted for every plate.</p>
+
+        <div class="hero-actions mt-4">
+            <a class="btn btn-light btn-lg me-2 shadow-sm" asp-area="" asp-controller="Home" asp-action="Index">Explore the Flock</a>
+            <a class="btn btn-outline-light btn-lg shadow-sm" asp-area="" asp-controller="Home" asp-action="Privacy">Our Promise</a>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    @if(ViewBag.Chicken != null)
+    {
+        <div class="alert alert-warning rounded-4 shadow-sm mb-5" role="alert">
+            <strong>Featured today:</strong> @ViewBag.Chicken
+        </div>
+    }
+
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="feature-card p-4 h-100 shadow-sm rounded-4">
+                <div class="feature-icon">🥚</div>
+                <h3>Fresh Eggs Daily</h3>
+                <p class="text-muted">Straight from our happy hens to your table, every egg is hand-selected for quality and taste.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card p-4 h-100 shadow-sm rounded-4">
+                <div class="feature-icon">🌿</div>
+                <h3>Happy Free-Range Hens</h3>
+                <p class="text-muted">Our flock roams free on green pastures, delivering rich flavor and sustainable farm care.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card p-4 h-100 shadow-sm rounded-4">
+                <div class="feature-icon">🔥</div>
+                <h3>Farm-to-Table Flavor</h3>
+                <p class="text-muted">From pasture to plate, enjoy the finest chicken and recipes that celebrate real farm freshness.</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="story-panel mt-5 p-5 rounded-4 shadow-sm bg-white border">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-6">
+                <span class="section-tag">Why Chicken?</span>
+                <h2 class="section-heading">A farm story worth sharing.</h2>
+                <p class="text-muted">Our chickens are raised with care, nourished on wholesome feed, and tended by people who believe every meal should feel like home.</p>
+                <ul class="list-unstyled text-muted mt-4">
+                    <li class="mb-3"><strong>100% natural</strong> ingredients in every feed mix.</li>
+                    <li class="mb-3"><strong>Transparent farming</strong> from coop to kitchen.</li>
+                    <li><strong>Premium quality</strong> designed for families, restaurants, and chicken lovers.</li>
+                </ul>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="story-card rounded-4 shadow-sm p-4 bg-secondary text-white">
+                    <h3 class="mb-3">Farm Fresh Promise</h3>
+                    <p>We deliver exceptional chicken experiences with warmth, quality, and a hint of sunshine in every bite.</p>
+                    <div class="stats d-flex justify-content-between mt-4">
+                        <div>
+                            <span class="stat-value">12K+</span>
+                            <p class="stat-label">Eggs / week</p>
+                        </div>
+                        <div>
+                            <span class="stat-value">5-Star</span>
+                            <p class="stat-label">Farm reviews</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
