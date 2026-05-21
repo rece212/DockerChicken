@@ -88,7 +88,7 @@ jobs:
     - name: Integration Step 1 - Seed Data via API
       run: |
         echo "Posting a new chicken payload to the database..."
-        curl -X POST http://localhost:8080/api/Chicken \
+        curl -X POST http://localhost:8080/api/chicken \
           -H "Content-Type: application/json" \
           -d '{"name": "Cluck Norris", "breed": "Rhode Island Red"}' \
           --fail --verbose
