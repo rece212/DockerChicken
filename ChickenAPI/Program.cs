@@ -9,8 +9,8 @@ namespace ChickenAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-             builder.Services.AddDbContext<FarmDbContext>(options =>
-                options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
+            builder.Services.AddDbContext<FarmDbContext>(options =>
+               options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
 
 
             builder.Services.AddControllers();
@@ -27,7 +27,7 @@ namespace ChickenAPI
                     options.RoutePrefix = "swagger";
                 });
             }
-            
+
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
