@@ -77,7 +77,7 @@ jobs:
     - name: Grace Period for Database Boot
       run: |
         echo "Giving Microsoft SQL Server 10 seconds to complete table setups..."
-        sleep 10
+        sleep 0
 
     - name: Wait for API Readiness
       run: |
