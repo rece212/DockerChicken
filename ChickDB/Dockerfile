@@ -25,11 +25,15 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
 
 # Start SQL Server and run the init script
 # Added -C to sqlcmd to handle SSL certificate trust in newer images
-CMD /bin/bash -c "/opt/mssql/bin/sqlservr & \
-  sleep 25 && \
+# Start the initialization script in the background, then launch SQL Server in the foreground
+CMD /bin/bash -c "(\
+  echo 'Waiting for SQL Server to boot...'; \
+  sleep 15; \
   if /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '$MSSQL_SA_PASSWORD' -C -Q 'SELECT name FROM sys.databases WHERE name = \"Farm\"' | grep -q Farm; then \
-    echo 'Database already exists'; \
+    echo 'Database already exists.'; \
   else \
-    echo 'Initializing database'; \
+    echo 'Initializing database schemas...'; \
     /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '$MSSQL_SA_PASSWORD' -C -d master -i /app/init-scripts/init-database.sql; \
-  fi && wait"
+    echo 'Database initialization script completed successfully!'; \
+  fi) & \
+  exec /opt/mssql/bin/sqlservr"
