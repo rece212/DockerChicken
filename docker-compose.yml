@@ -18,18 +18,19 @@ services:
       - chick-network
 
   mvc-service:
-    build:
-      context: .               
-      dockerfile: ./ChickMVC/Dockerfile  
-    container_name: mvc-chick-service-magic
-    environment:
-      SQL_CONNECTION_STRING: "Server=chick-db;Database=Farm;Trusted_Connection=false;MultipleActiveResultSets=true;Encrypt=false;user id=sa;password=Password1!"
-    ports:
-      - "80:8080"
-    depends_on:
-      - chick-db-service # Reverted to standard container detection
-    networks:
-      - chick-network 
+      build:
+        context: .               
+        dockerfile: ./ChickMVC/Dockerfile  
+      container_name: mvc-chick-service-magic
+      environment:
+        - SQL_CONNECTION_STRING=Server=chick-db;Database=Farm;Trusted_Connection=false;MultipleActiveResultSets=true;Encrypt=false;user id=sa;password=Password1!
+        - ASPNETCORE_URLS=http://0.0.0.0:8080   # <-- FORCES C# TO LISTEN ON 8080 INTERNALLY
+      ports:
+        - "80:8080"                             # <-- Droplet port 80 routes to container 8080
+      depends_on:
+        - chick-db-service
+      networks:
+        - chick-network 
 
   api-service:
     build:
@@ -37,11 +38,12 @@ services:
       dockerfile: ./ChickenAPI/Dockerfile
     container_name: api-chick-service
     environment:
-       SQL_CONNECTION_STRING: "Server=chick-db;Database=Farm;Trusted_Connection=false;MultipleActiveResultSets=true;Encrypt=false;user id=sa;password=Password1!"
+      - SQL_CONNECTION_STRING=Server=chick-db;Database=Farm;Trusted_Connection=false;MultipleActiveResultSets=true;Encrypt=false;user id=sa;password=Password1!
+      - ASPNETCORE_URLS=http://0.0.0.0:8080  # <-- FORCES C# TO LISTEN ON 8080 INTERNALLY
     ports:
-      - "8080:8080"
+      - "8080:8080"                           # <-- Droplet port 8080 routes to container 8080
     depends_on:
-      - chick-db-service # Reverted to standard container detection
+      - chick-db-service
     networks:
       - chick-network
 
