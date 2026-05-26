@@ -14,7 +14,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
-  # JOB 1: Validates code layout, syntax formatting, and compilation rules early
+  # JOB 1: Evaluates codebase syntax layout, configurations, and warnings early
   code-quality:
     name: 🛡️ Code Quality & Formatting
     runs-on: ubuntu-latest
@@ -29,18 +29,17 @@ jobs:
         cache: true
         cache-dependency-path: '**/*.csproj'
 
-    # FIX: Executable steps that use the configured cache layout to validate syntax stability
     - name: Verify Code Formatting
       run: dotnet format --verify-no-changes --severity warn
 
     - name: Static Code Analysis
       run: dotnet build --configuration Release /warnaserror
 
-  # JOB 2: Compiles the source files inside target Docker configurations
+  # JOB 2: Validates compile capability within runner environments
   compile-and-build:
     name: 🏗️ Docker Build & Package
     runs-on: ubuntu-latest
-    needs: code-quality # Only starts if static formatting checks pass cleanly
+    needs: code-quality
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -55,11 +54,11 @@ jobs:
     - name: Build Application Containers
       run: docker compose build
 
-  # JOB 3: Spins up container layout and evaluates cross-dependency integrations
+  # JOB 3: Launches local dependency topologies and handles cross-integration validations
   integration-testing:
     name: 🧪 System Integration Verification
     runs-on: ubuntu-latest
-    needs: compile-and-build # Only starts after Docker builds successfully finalize
+    needs: compile-and-build
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -76,8 +75,8 @@ jobs:
 
     - name: Grace Period for Database Boot
       run: |
-        echo "Giving Microsoft SQL Server 10 seconds to complete table setups..."
-        sleep 0
+        echo "Giving Microsoft SQL Server 25 seconds to complete table setups..."
+        sleep 25
 
     - name: Wait for API Readiness
       run: |
@@ -114,7 +113,7 @@ jobs:
         docker compose logs mvc-service > mvc-container-debug.log
         docker compose down --volumes
 
-  # JOB 4: Automated continuous delivery task gated behind previous validation approvals
+  # JOB 4: Automated secure continuous delivery tasks hitting remote server configurations
   cd-deployment:
     name: 🚀 Production Cloud Deployment
     runs-on: ubuntu-latest
@@ -122,6 +121,83 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' 
     environment: Production 
     steps:
-    - name: Execute Server Infrastructure Sync
+    - name: Deploy via SSH to DigitalOcean Droplet
+      uses: appleboy/ssh-action@v1.2.0  
+      with:
+        host: ${{ secrets.DO_DROPLET_IP }}
+        key: ${{ secrets.DO_SSH_KEY }}
+        username: root
+        timeout: 60s
+        command_timeout: 30m  # Safeguards long-running .NET restores from throwing timeout errors
+        script: |
+          # Target project directory on the remote server
+          PROJECT_DIR="dockerchicken"
+          
+          # Force Git to explicitly use the Droplet's authorized deploy key file path context
+          export GIT_SSH_COMMAND="ssh -i /root/.ssh/id_ed25519 -o IdentitiesOnly=yes"
+          
+          # Navigate into directory or pull repository via Git over SSH dynamically
+          if [ -d "$PROJECT_DIR" ]; then
+            cd "$PROJECT_DIR"
+            echo "Syncing remote context safely..."
+            git fetch --all
+            git reset --hard origin/${{ github.ref_name }}
+            git pull
+          else
+            echo "Initializing remote directory workspace layout dynamically for ${{ github.repository }}..."
+            git clone git@github.com:${{ github.repository }}.git "$PROJECT_DIR"
+            cd "$PROJECT_DIR"
+          fi
+          
+          # Bring down older services safely
+          echo "Stopping active container clusters..."
+          docker compose down
+          
+          # Run the fresh build and up on the Droplet
+          echo "Initiating production runtime compilation environment..."
+          docker compose up -d --build
+          
+          echo "Deployment completely executed successfully!"
+
+  # JOB 5: Connects over the public internet to verify the deployment is accessible globally
+  post-deployment-smoke-test:
+    name: 🔍 Live Cloud Smoke Verification
+    runs-on: ubuntu-latest
+    needs: cd-deployment
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+    - name: Settle Environments
       run: |
-        echo "All automated tests passed cleanly. Initiating production handshake scripts..."
+        echo "Allowing containers 15 seconds to fully complete initial production boot cycles..."
+        sleep 15
+
+    - name: Verify Public REST API Gateway (Port 8080)
+      run: |
+        echo "Testing public connection to API over port 8080..."
+        API_URL="http://${{ secrets.DO_DROPLET_IP }}:8080/GetMeEggs"
+        
+        # Pull response, enforcing a connection timeout if the network blocks it
+        API_RESPONSE=$(curl -sSf --connect-timeout 10 "$API_URL")
+        echo "API Response Received: $API_RESPONSE"
+        
+        if echo "$API_RESPONSE" | grep -q "Here are some eggs!"; then
+          echo "✅ PASSED: Backend cloud REST API gateway is live and responding externally!"
+        else
+          echo "❌ FAILED: Backend API responded with unexpected data layout."
+          exit 1
+        fi
+
+    - name: Verify Public MVC User Interface (Port 80)
+      run: |
+        echo "Testing public connection to MVC Front-End over port 80..."
+        MVC_URL="http://${{ secrets.DO_DROPLET_IP }}:80"
+        
+        MVC_HEADERS=$(curl -sI --connect-timeout 10 "$MVC_URL")
+        echo "$MVC_HEADERS"
+        
+        if echo "$MVC_HEADERS" | grep -qE "200 OK|302 Found|302 Moved"; then
+          echo "✅ PASSED: Front-End MVC application is public and handling connections flawlessly!"
+        else
+          echo "❌ FAILED: Front-End MVC application refused external connection handshakes."
+          exit 1
+        fi
